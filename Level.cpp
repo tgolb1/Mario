@@ -18,7 +18,8 @@ Level::Level(){
     mPct = settings->coinPct;
     delete settings;
 
-    grid = new char*[N];
+    //below creates new char[N][N] array (NxN size)
+    grid = new char*[N]; 
     for (int i=0; i<N; ++i) {
         grid[i] = new char[N];
     }
@@ -32,11 +33,11 @@ void Level::setLevel(){
     for(int i=0; i<N; ++i){
         for(int j=0; j<N; ++j){
             randNum = rand()%100;
-            if (randNum < cPct) {
+            if (randNum < cPct) { //e.g. <20
                 grid[i][j] = 'c';
-            } else if (randNum < cPct+bPct) {
+            } else if (randNum < cPct+bPct) { //e.g. 20-40
                 grid[i][j] = 'x';
-            } else if (randNum < cPct+bPct+gPct) {
+            } else if (randNum < cPct+bPct+gPct) { //e.g. 40-60, etc.
                 grid[i][j] = 'g';
             } else if (randNum < cPct+bPct+gPct+kPct) {
                 grid[i][j] = 'k';

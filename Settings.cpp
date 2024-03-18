@@ -25,7 +25,8 @@ void Settings::setPreferences(string file){
     delete fp;
 }
 
-string Settings::getPreferences(){
+/*
+string Settings::getPreferences(){ //helper function for debugging
     return 
         "\nNumber of levels:    " + to_string(L) +
         "\nGrid dimensions:     " + to_string(N) +
@@ -36,3 +37,4 @@ string Settings::getPreferences(){
         "\nKoopa percentage:    " + to_string(koopaPct) +
         "\nMushroom percentage: " + to_string(mushroomPct);
 }
+*/

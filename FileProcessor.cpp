@@ -1,11 +1,8 @@
 #include "FileProcessor.h"
 
-FileProcessor::FileProcessor(){
-}
+FileProcessor::FileProcessor(){}
 
-FileProcessor::~FileProcessor(){
-
-}
+FileProcessor::~FileProcessor(){}
 
 void FileProcessor::readFile(string file){
     string line;
@@ -24,7 +21,7 @@ void FileProcessor::readFile(string file){
 
 void FileProcessor::writeFile(string content, string fileName){
     ofstream outputFile(fileName);
-    outputFile << content;
+    outputFile << content; //write content into outputFile
     outputFile.close();
 
 }
