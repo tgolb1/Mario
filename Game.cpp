@@ -115,9 +115,9 @@ void Game::playLevel(){
                         break;
                     } else {
                         if (powLev >=1){
-                            log += "\nMario fought a goomba and lost.";
-                            log += "\nMario will STAY PUT.";
                             powLev--;
+                            log += "\nMario fought a goomba and lost.";
+                            log += "\nMario will STAY PUT. PL(" + to_string(powLev) + ")";
                         } else if (lives > 1){
                             lives--;
                             powLev = 0;
@@ -143,9 +143,9 @@ void Game::playLevel(){
                         break;
                     } else {
                         if (powLev > 0){
-                            log += "\nMario fought a koopa and lost.";
-                            log += "\nMario will STAY PUT.";
                             powLev -= 1;
+                            log += "\nMario fought a koopa and lost.";
+                            log += "\nMario will STAY PUT. PL(" + to_string(powLev) + ")";
                         } else if (lives > 1){
                             lives--;
                             powLev = 0;
@@ -178,9 +178,9 @@ void Game::playLevel(){
                         return;
                     } else {
                         if (powLev >=2){
-                            log += "\nMario fought the level boss and lost.";
-                            log += "\nMario will STAY PUT.";
                             powLev -= 2;
+                            log += "\nMario fought the level boss and lost.";
+                            log += "\nMario will STAY PUT. PL(" + to_string(powLev) + ")";
                         } else if (lives > 1) {
                             lives--;
                             powLev = 0;
