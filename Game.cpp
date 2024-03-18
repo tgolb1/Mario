@@ -4,20 +4,36 @@ using namespace std;
 
 Game::Game(){
     srand(time(0)); //set random seed for RNG
+    isAlive = true;
     l = new Level();
-    log = "\0";
+    log = "\n\n ~ M ~ A ~ R ~ I ~ O ~ ";
     lives = l->V;
+    level = 0;
+    heroX = 0;
+    heroY = 0;
+    occObj = 'x';
     coins = 0;
     powLev = 0;
     killCount = 0;
 
     for(int i = 0; i < l->L; ++i){
-        level = i+1;
-        l->setLevel();
-        setSpecialObjects();
-        playLevel();
+        if (isAlive) {
+            level = i+1;
+            l->setLevel();
+            setSpecialObjects();
+            playLevel();
+        }
     }
 
+    if (isAlive){
+        log += "\n\nMario saved the princess!";
+        log += "\nCONGRATULATIONS, YOU WIN!";
+        log += "\n\n~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ \n\n";
+    }
+    FileProcessor *fp = new FileProcessor();
+    fp->writeFile(log, l->outputFileName);
+
+    delete fp;
     delete l;
     
 }
@@ -27,17 +43,35 @@ Game::~Game(){}
 void Game::setSpecialObjects(){
     heroX = randNum(l->N); //set hero coordinates
     heroY = randNum(l->N);
-    occObj = l->grid[heroX][heroY];
-    l->grid[heroX][heroY] = 'H'; //place hero
+    int warpX = heroX;
+    int warpY = heroY;
+    int bossX = heroX;
+    int bossY = heroY;
 
-    l->grid[randNum(l->N)][randNum(l->N)] = 'w'; //place warp pipe 
-    l->grid[randNum(l->N)][randNum(l->N)] = 'b'; //place boss
+    if (level < l->L) { //if not final level, add warp pipe
+        while (warpX==heroX && warpY==heroY) { //ensure unique placement
+            warpX = randNum(l->N);
+            warpY = randNum(l->N);
+        }
+    }
+
+    while ((bossX==heroX && bossY==heroY) || (bossX==warpX && bossY==warpY)) { //ensure unique placement
+        bossX = randNum(l->N);
+        bossY = randNum(l->N);
+    }
+
+    
+    occObj = l->grid[heroX][heroY];
+
+    l->grid[heroX][heroY] = 'H'; //place hero
+    l->grid[warpX][warpY] = 'w'; //place warp pipe 
+    l->grid[bossX][bossY] = 'b'; //place boss
 
 }
 
 
 void Game::playLevel(){
-    bool isAlive = true;
+    isAlive = true;
 
     while(isAlive){
         log += "\n\n~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~";
@@ -55,6 +89,13 @@ void Game::playLevel(){
             lives++;
             log += "\n\nEXTRA LIFE (7 consecutive kills)";
         }
+
+        if (coins == 20) {
+            coins = 0;
+            lives++;
+            log += "\n\nEXTRA LIFE (20 coins)";
+        }
+
 
         switch(occObj){
             case 'x':
@@ -77,13 +118,18 @@ void Game::playLevel(){
                             log += "\nMario fought a goomba and lost.";
                             log += "\nMario will STAY PUT.";
                             powLev--;
-                        } else if (lives > 0){
+                        } else if (lives > 1){
                             lives--;
                             powLev = 0;
-                            killCount = 0;
+                            killCount = 0;    
+                            log += "\nMario fought a goomba and lost.";
+                            log += "\n" + to_string(lives) + " lives remaining.";
+                            log += "\nMario will STAY PUT.";
                         } else {
+                            log += "\nMario fought a goomba and DIED.";
+                            log += "\n\nGAME OVER\n\n";
                             isAlive = false;
-                            //break;
+                            break;
                         }
                     }
                 }
@@ -100,14 +146,18 @@ void Game::playLevel(){
                             log += "\nMario fought a koopa and lost.";
                             log += "\nMario will STAY PUT.";
                             powLev -= 1;
-                        } else if (lives > 0){
+                        } else if (lives > 1){
                             lives--;
                             powLev = 0;
                             killCount = 0;    
+                            log += "\nMario fought a koopa and lost.";
+                            log += "\n" + to_string(lives) + " lives remaining.";
+                            log += "\nMario will STAY PUT.";
                         } else {
-                            log += "\nMario DIED."; //todo delete
+                            log += "\nMario fought a koopa and DIED.";
+                            log += "\n\nGAME OVER\n\n";
                             isAlive = false;
-                            //break;
+                            break;
                         }
                     }
                 }
@@ -122,13 +172,16 @@ void Game::playLevel(){
                 while (isAlive){
                     if((randNum(100))<50){
                         log += "\nMario fought the level boss and won!";
+                        if (level < l->L) {
+                            log += "\nMario will move on to the next level!";
+                        }
                         return;
                     } else {
                         if (powLev >=2){
                             log += "\nMario fought the level boss and lost.";
                             log += "\nMario will STAY PUT.";
                             powLev -= 2;
-                        } else if (lives > 0) {
+                        } else if (lives > 1) {
                             lives--;
                             powLev = 0;
                             killCount = 0;    
@@ -136,8 +189,10 @@ void Game::playLevel(){
                             log += "\n" + to_string(lives) + " lives remaining.";
                             log += "\nMario will STAY PUT.";
                         } else {
+                            log += "\nMario fought the level boss and DIED.";
+                            log += "\n\nGAME OVER\n\n";
                             isAlive = false;
-                            //break;
+                            break;
                         }
                     }
                 }
@@ -150,12 +205,12 @@ void Game::playLevel(){
 
             default:
                 log += "\n\n\n~~~~~ error occured ~~~~~\n\n\n";
-            return;
+                return;
+            break;
         }
     }
-    //log += "\n\n\nMario died and the game ended :(\n\n";
 
-    cout << log << endl;
+    //cout << log << endl;
 }
 
 void Game::move(){
@@ -167,14 +222,14 @@ void Game::move(){
         case 0: //up
             log += "UP.";
             if(heroX == 0){
-                heroX = l->N;
+                heroX = (l->N)-1;
             } else {
                 heroX--;
             }
         break;
         case 1: //down
             log += "DOWN.";
-            if(heroX == l->N){
+            if(heroX == (l->N)-1){
                 heroX = 0;
             } else {
                 heroX++;
@@ -183,14 +238,14 @@ void Game::move(){
         case 2: //left
             log += "LEFT.";
             if(heroY == 0){
-                heroY = l->N;
+                heroY = (l->N)-1;
             } else {
                 heroY--;
             }
         break;
         case 3: //right
             log += "RIGHT";
-            if(heroY == l->N){
+            if(heroY == (l->N)-1){
                 heroY = 0;
             } else {
                 heroY++;

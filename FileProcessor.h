@@ -12,7 +12,7 @@ class FileProcessor {
         FileProcessor();
         ~FileProcessor();
         void readFile(string fileName);
-        void writeFile(string fileName);
+        void writeFile(string content, string fileName);
 
         int fLine[8]; //int array of file lines
 };

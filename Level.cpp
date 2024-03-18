@@ -1,9 +1,13 @@
 #include "Level.h"
-#include "Game.h"
 
 Level::Level(){
     settings = new Settings();
-    settings->setPreferences("preferences.txt");
+    string fileName;
+    std::cout << "Enter the name fo the preferences file (e.g. \'preferences.txt\')" << endl;
+    std::cin >> fileName;
+    settings->setPreferences(fileName);
+    std::cout << "Enter the name for the output file (e.g. \'log.txt\')" << endl;
+    std::cin >> outputFileName;
     N = settings->N;
     L = settings->L;
     V = settings->V;
@@ -13,16 +17,19 @@ Level::Level(){
     kPct = settings->coinPct;
     mPct = settings->coinPct;
     delete settings;
+
+    grid = new char*[N];
+    for (int i=0; i<N; ++i) {
+        grid[i] = new char[N];
+    }
 }
 
 Level::~Level(){}
 
 void Level::setLevel(){
     int randNum;
-    grid = new char*[N];
 
     for(int i=0; i<N; ++i){
-        grid[i] = new char[N];
         for(int j=0; j<N; ++j){
             randNum = rand()%100;
             if (randNum < cPct) {
@@ -40,5 +47,4 @@ void Level::setLevel(){
     }
     //grid is now full of coins, blanks, goombas, koopas, and mushrooms
     //Hero, warp pipe, and level boss will overwrite 3 of these squares
-
 }

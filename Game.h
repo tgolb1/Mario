@@ -34,9 +34,9 @@ class Game {
         int powLev;
         int lives;
         int killCount;
+        int gridSize;
         string log;
-        
-
+        bool isAlive;
 };
 
 #endif

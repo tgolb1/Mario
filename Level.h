@@ -8,6 +8,7 @@ create NxN level filled with GameObjects
 #define LEVEL_H
 
 #include "Settings.h"
+#include <iostream>
 
 class Level {
     public:
@@ -18,6 +19,7 @@ class Level {
         int N; //grid size
         int V; //number of initial lives
         char** grid;
+        string outputFileName;
 
     private:
         int cPct;

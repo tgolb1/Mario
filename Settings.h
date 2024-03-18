@@ -14,7 +14,6 @@ class Settings {
         void setPreferences(string file);
         string getPreferences();
 
-        //public to be accessed by other classes
         int L; //number of levels
         int N; //dimensions of grid
         int V; //initial lives
